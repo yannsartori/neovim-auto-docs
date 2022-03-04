@@ -1,6 +1,7 @@
 local M = {}
 
 local treesitter_utils = require('utils.treesitter')
+local str_utils = require('utils.string')
 local AbstractFunction = require('functions.generic').AbstractFunction
 
 local api = vim.api
@@ -85,8 +86,16 @@ local JsFunction = {}
 
 function M.generate_docstring()
   local builder = JsFunction
-  local func_node = builder.get_func_node()
-  local func_name = builder.get_func_name(func_node, api.nvim_get_current_line())
+
+  local cur_line = api.nvim_get_current_line()
+  local status, func_node = pcall(builder.get_func_node, cur_line)
+  if not status then
+    -- Ignore the path
+    print('[NeovimAutoDocs]' .. str_utils.split(func_node, ':')[3])
+    return
+  end
+
+  local func_name = builder.get_func_name(func_node, cur_line)
   local params = builder.get_params(func_node)
   local return_type = builder.get_return(func_node)
   local doc = builder.generate_docstring(func_name, params, return_type)

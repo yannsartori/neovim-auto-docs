@@ -78,16 +78,15 @@ local PythonFunction = {}
     function PythonFunction.write_docstring(func_node, doc)
       local cur_line = api.nvim_get_current_line()
       local whitespace = ''
-      local tab = '    '
-      local i, j = cur_line:find('^%s*')
-      if i then
-        whitespace = cur_line:sub(i, j)
-        if str_utils.starts_with(whitespace, '\t') then
-            tab = '\t'
-        end
+
+      local tab = ''
+      if api.nvim_get_option('expandtab') then
+        tab = string.rep(' ', api.nvim_get_option('shiftwidth'))
+      else
+        tab = '\t'
       end
+
       for idx, line in ipairs(doc) do
-        -- TODO determine this better. Maybe use expandtab?
         if line ~= '' then
             doc[idx] = whitespace .. tab .. line
         else
@@ -104,7 +103,15 @@ local PythonFunction = {}
 
 function M.generate_docstring()
   local builder = PythonFunction
-  local func_node = builder.get_func_node()
+
+  local cur_line = api.nvim_get_current_line()
+  local status, func_node = pcall(builder.get_func_node, cur_line)
+  if not status then
+    -- Ignore the path
+    print('[NeovimAutoDocs]' .. str_utils.split(func_node, ':')[3])
+    return
+  end
+
   local func_name = builder.get_func_name(func_node, api.nvim_get_current_line())
   local params = builder.get_params(func_node)
   local return_type = builder.get_return(func_node)

@@ -1,6 +1,8 @@
 local M = {}
 
 local ts_utils = require('nvim-treesitter.ts_utils')
+local custom_ts_utils = require('utils.treesitter')
+local misc_utils = require('utils.misc')
 local consts = require('utils.constants')
 
 local api = vim.api
@@ -9,8 +11,9 @@ local AbstractFunction = {}
 -- {{
     -- Get the root function node on the line the cursor is currently at
     --- @return any #The node
-    function AbstractFunction.get_func_node()
-      api.nvim_feedkeys("$", "n", false)
+    function AbstractFunction.get_func_node(current_line)
+      local row, col = unpack(api.nvim_win_get_cursor(0))
+      api.nvim_win_set_cursor(0, { [1]=row, [2]=#current_line-1 })
       local node = ts_utils.get_node_at_cursor()
       if node == nil then
         error('No Treesitter installed.')
@@ -20,7 +23,7 @@ local AbstractFunction = {}
       local start_row = node:start()
       local parent = node:parent()
 
-      while (parent ~= nil and parent:start() == start_row and node:type() ~= consts.FUNCTION) do
+      while (parent ~= nil and parent:start() == start_row and not custom_ts_utils.is_function(node:type())) do
         node = parent
         parent = node:parent()
       end
