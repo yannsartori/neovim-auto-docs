@@ -1,11 +1,11 @@
 local M = {}
 
 function M.starts_with(str, start)
-    return str:sub(1, #start) == start
+  return str:sub(1, #start) == start
 end
 
 function M.ends_with(str, ending)
-    return ending == "" or str:sub(-#ending) == ending
+  return ending == "" or str:sub(-#ending) == ending
 end
 
 local function gsplit(text, pattern, plain)
@@ -18,7 +18,7 @@ local function gsplit(text, pattern, plain)
         ret = string.sub(text, splitStart)
         splitStart = nil
       elseif sepEnd < sepStart then
-        -- Empty separator!
+      -- Empty separator!
         ret = string.sub(text, splitStart, sepStart)
         if sepStart < length then
           splitStart = sepStart + 1

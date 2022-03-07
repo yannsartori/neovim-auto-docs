@@ -7,7 +7,7 @@ function M.is_param(type)
 end
 
 function M.is_function(type)
-    return string.find(type, consts.FUNCTION)
+  return string.find(type, consts.FUNCTION)
 end
 
 function M.is_identifier(type)
@@ -15,9 +15,9 @@ function M.is_identifier(type)
 end
 
 function M.is_program(type)
-    return (
-        str_utils.ends_with(type, consts.PROGRAM) or
-        str_utils.ends_with(type, consts.MODULE)
-    )
+  return (
+    str_utils.ends_with(type, consts.PROGRAM) or
+    str_utils.ends_with(type, consts.MODULE)
+  )
 end
 return M
