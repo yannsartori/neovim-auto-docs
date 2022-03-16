@@ -12,8 +12,9 @@ local AbstractFunction = {}
   -- Get the root function node on the line the cursor is currently at
   --- @return any #The node
   function AbstractFunction.get_func_node(current_line)
-    local row, col = unpack(api.nvim_win_get_cursor(0))
+    local row, _ = unpack(api.nvim_win_get_cursor(0))
     api.nvim_win_set_cursor(0, { [1]=row, [2]=#current_line-1 })
+
     local node = ts_utils.get_node_at_cursor()
     if node == nil then
       error('No Treesitter installed.')

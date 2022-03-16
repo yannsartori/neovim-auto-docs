@@ -23,13 +23,14 @@ local PythonFunction = {}
   --- @return string[] #The parameters
   function PythonFunction.get_params(func_node)
     local param_nodes = func_node:field('parameters')[1]
-    local params = { }
+    local params = {}
     for param in param_nodes:iter_children() do
       -- The variable is untyped
       if treesitter_utils.is_identifier(param:type()) then
         local row_start, col_start, _, col_end = param:range()
         local line = api.nvim_buf_get_lines(0, row_start, row_start + 1, true)[1]
         local param_name = line:sub(col_start + 1, col_end)
+        -- Ignore self parameters
         if param_name ~= 'self' then
           table.insert(params, param_name)
         end
@@ -72,9 +73,8 @@ local PythonFunction = {}
 
   -- Writes the docstring to the buffer
   --- @param func_node any #The function node
-  --- @param doc string[] #The the docstring contents
+  --- @param doc string[] #The docstring contents
   function PythonFunction.write_docstring(func_node, doc)
-    local cur_line = api.nvim_get_current_line()
     local whitespace = ''
 
     local tab = ''
