@@ -6,9 +6,9 @@ local api = vim.api
 function M.generate_doc()
 	local cur_file_name = api.nvim_buf_get_name(0)
 	if str_utils.ends_with(cur_file_name, ".ts") then
-		require("functions.js").generate_docstring()
+		require("neovim-auto-docs.functions.js").generate_docstring()
 	elseif str_utils.ends_with(cur_file_name, ".py") then
-		require("functions.py").generate_docstring()
+		require("neovim-auto-docs.functions.py").generate_docstring()
 	end
 end
 
