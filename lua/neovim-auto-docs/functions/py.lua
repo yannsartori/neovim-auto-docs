@@ -85,11 +85,7 @@ function PythonFunction.write_docstring(func_node, doc)
 	end
 
 	for idx, line in ipairs(doc) do
-		if line ~= "" then
-			doc[idx] = whitespace .. tab .. line
-		else
-			doc[idx] = line
-		end
+    doc[idx] = tab .. tab .. line
 	end
 	table.insert(doc, "")
 	local row_start, _, _, _ = func_node:field("body")[1]:range()
